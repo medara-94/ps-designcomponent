@@ -2,7 +2,7 @@ import SpeakersList from "./SpeakersList";
 import SpeakersToolbar from "./SpeakersToolbar";
 import { useState } from "react";
 
-function Speakers({ data, theme, setTheme}) {
+function Speakers({ theme, setTheme}) {
     const [showSession, setShowSession] = useState(true);
     return(
         /* React Fragment*/
@@ -13,7 +13,6 @@ function Speakers({ data, theme, setTheme}) {
                 showSession={showSession}
                 setShowSession={setShowSession}/>
             <SpeakersList 
-                data={data}
                 showSession={showSession}
                 />
         </>

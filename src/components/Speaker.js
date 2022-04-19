@@ -26,6 +26,20 @@ function Session ({title , room}) {
     </div>
     )
   }
+
+  function SpeakerFavorite({favorite}){
+    return(
+      <div className="action padB1">
+        <span>
+          <i className={
+            favorite === true ?
+              "fa fa-star orange" : "fa fa-star-o orange"  /* fa stà per font awesome*/
+          }/>{" "}
+          Favorite{" "}
+        </span> 
+      </div>
+    )
+  }
   
   function SpeakerDemographics ({first, last, bio, company,twitterHandle,favorite}) {
     return (
@@ -35,6 +49,9 @@ function Session ({title , room}) {
           {first} {last}
         </h3>
       </div>
+      <SpeakerFavorite
+        favorite={favorite}
+      />
       <div>
         <p className="card-description">
           {bio} 

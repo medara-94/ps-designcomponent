@@ -27,10 +27,12 @@ function Session ({title , room}) {
     )
   }
 
-  function SpeakerFavorite({favorite}){
+  function SpeakerFavorite({favorite, onFavoriteToggle}){
     return(
       <div className="action padB1">
-        <span>
+        <span
+          onClick={onFavoriteToggle}
+        >
           <i className={
             favorite === true ?
               "fa fa-star orange" : "fa fa-star-o orange"  /* fa stà per font awesome*/
@@ -41,7 +43,7 @@ function Session ({title , room}) {
     )
   }
   
-  function SpeakerDemographics ({first, last, bio, company,twitterHandle,favorite}) {
+  function SpeakerDemographics ({first, last, bio, company,twitterHandle,favorite,onFavoriteToggle}) {
     return (
       <div className="speaker-info">
       <div className="d-flex justify-content-between mb-3">
@@ -51,6 +53,8 @@ function Session ({title , room}) {
       </div>
       <SpeakerFavorite
         favorite={favorite}
+        onFavoriteToggle={onFavoriteToggle}
+        /* Non serve sapere l'id da aggiornare quì, è incapsulato nella funzione*/
       />
       <div>
         <p className="card-description">
@@ -71,13 +75,13 @@ function Session ({title , room}) {
     )
   }
   
-  function Speaker ({ speaker, showSession }) {
+  function Speaker ({ speaker, showSession, onFavoriteToggle }) {
     const {id, first, last, sessions } = speaker;
     return (
       <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
       <div className="card card-height p-4 mt-4">
         <SpeakerImage id={id} first={first} last={last}/>
-        <SpeakerDemographics {...speaker} />
+        <SpeakerDemographics {...speaker} onFavoriteToggle={onFavoriteToggle} />
       </div>
       {showSession === true ?  
         <Sessions sessions={sessions} /> : null}

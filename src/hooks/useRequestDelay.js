@@ -1,4 +1,3 @@
-import {data} from "../../SpeakerData";
 import {useState, useEffect} from "react";
 
 //Esporto così non devo ripetermi negli altri componenti
@@ -8,8 +7,8 @@ export const REQUEST_STATUS = {
     FAILURE: "failure",   
 };
 
-function useRequestSpeakers(delayTime = 1000){
-    const [speakersData, setSpeakersData] = useState([]); 
+function useRequestDelay(delayTime = 1000, initialData=[]){
+    const [data, setData] = useState(initialData); 
     const [requestStatus, setRequestStatus] = useState(REQUEST_STATUS.LOADING);
     const [error, setError] = useState("");
 
@@ -24,7 +23,7 @@ function useRequestSpeakers(delayTime = 1000){
                 await delay(delayTime);
                 // throw "Had Error."
                 setRequestStatus(REQUEST_STATUS.SUCCESS); //Renderizza nuovamente, come ad ogni cambio stato
-                setSpeakersData(data);
+                setData(data);
             } catch(e) {
                 setRequestStatus(REQUEST_STATUS.FAILURE);
                 setError(e);
@@ -33,29 +32,29 @@ function useRequestSpeakers(delayTime = 1000){
         delayFunc();           
     }, []); //Gli passo l'array vuoto per evitare che venga renderizzato ad ogni cambio stato
 
-    function onFavoriteToggle(id) {
-        //Recupero la referenza dell'oggetto che voglio modificare
-        const speakerRecPrevious = speakersData.find(function (rec) {
-            return rec.id === id;
+    //Sostituisce la vecchia funzione specifica generalizzandola
+    function updateRecord(recordUpdated){
+        const newRecords = data.map(function (rec){
+            return rec.id === recordUpdated.id ? recordUpdated : rec;
         });
-        //Creo un nuovo oggetto con i parametri aggiornati
-        const speakerRecUpdated = {
-            //Riporto i valori dell'oggetto originale
-            ...speakerRecPrevious,
-            //E poi aggiorno il valore da modificare
-            favorite: !speakerRecPrevious.favorite
-        };
-        // speakerData è un array, quindi aggiorno solo l'elemento modificato
-        const speakersDataNew = speakersData.map(function (rec){
-            return rec.id === id ? speakerRecUpdated: rec;
-        });
-        setSpeakersData(speakersDataNew);
+
+        async function delayFunction(){
+            try {
+                await delay(delayTime);
+                setData(newRecords);
+            } catch (error){
+                console.log("error thrown inside delayFunction", error);
+            }
+        }
+        delayFunction();
     }
 
     return{
-        speakersData, requestStatus, error,
-        onFavoriteToggle, 
+        data, 
+        requestStatus,
+        error,
+        updateRecord, 
     };
 }
 
-export default useRequestSpeakers;
+export default useRequestDelay;

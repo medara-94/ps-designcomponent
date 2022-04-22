@@ -1,18 +1,32 @@
 import Speaker from './Speaker';
 import {data} from "../../SpeakerData";
 import {useState, useEffect} from "react";
+import ReactPlaceHolder from 'react-placeholder';
 
 function SpeakersList({ showSession}) {
 
     const [speakersData, setSpeakersData] = useState([]); 
+    const [isLoading, setIsLoading] = useState(true); //Stato iniziale a true perchè all'apertura stà caricando
+    const [hasErrored, setHasErrored] = useState(false);
+    const [error, setError] = useState("");
+
 
     const delay = (ms) => new Promise((resolve) => setTimeout (resolve,ms));
 
     // Lo useEffect non è asincrono, quindi mi darà errore la promise, quindi creo una funzione async dentro
     useEffect(() => {
         async function delayFunc(){
-            await delay(2000);
-            setSpeakersData(data);
+            try
+            {
+                await delay(2000);
+                // throw "Had Error."
+                setIsLoading(false); //Renderizza nuovamente, come ad ogni cambio stato
+                setSpeakersData(data);
+            } catch(e) {
+                setIsLoading(false);
+                setHasErrored(true);
+                setError(e);
+            }
         }
         delayFunc();           
     }, []); //Gli passo l'array vuoto per evitare che venga renderizzato ad ogni cambio stato
@@ -36,20 +50,36 @@ function SpeakersList({ showSession}) {
         setSpeakersData(speakersDataNew);
     }
 
+    if (hasErrored === true){
+        return(
+            <div className="text-danger">
+                ERROR: <b>loading Speaker Data Failed {error} </b>
+            </div>    
+        )
+    }
+
+   // if (isLoading === true) return <div>Loading...</div> //Esce quì
+
     return (
         <div className="container speakers-list">
-        <div className="row">
-        {speakersData.map(function (speaker) {
-            return (
-            <Speaker 
-                key={speaker.id} 
-                speaker={speaker} 
-                showSession={showSession}
-                onFavoriteToggle={() => {onFavoriteToggle(speaker.id)}} 
-                />
-            );
-        })}
-        </div>
+            <ReactPlaceHolder
+                type="media"
+                rows={15}
+                className="speakerslist-placeholder"
+                ready={isLoading === false}>
+                    <div className="row">
+                    {speakersData.map(function (speaker) {
+                        return (
+                        <Speaker 
+                            key={speaker.id} 
+                            speaker={speaker} 
+                            showSession={showSession}
+                            onFavoriteToggle={() => {onFavoriteToggle(speaker.id)}} 
+                            />
+                        );
+                    })}
+                    </div>
+            </ReactPlaceHolder>
         </div>
     )
 }

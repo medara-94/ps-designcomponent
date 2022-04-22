@@ -15,7 +15,7 @@ function SpeakersList({ showSession}) {
             setSpeakersData(data);
         }
         delayFunc();           
-    });
+    }, []); //Gli passo l'array vuoto per evitare che venga renderizzato ad ogni cambio stato
 
     function onFavoriteToggle(id) {
         //Recupero la referenza dell'oggetto che voglio modificare

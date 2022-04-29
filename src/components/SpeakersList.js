@@ -2,15 +2,43 @@ import Speaker from './Speaker';
 import ReactPlaceHolder from 'react-placeholder';
 import useRequestDelay, {REQUEST_STATUS} from '../hooks/useRequestDelay';
 import {data} from '../../SpeakerData';
+import { useContext } from 'react';
+import  ListContext from '../store/listContext';
 
 function SpeakersList({ showSession}) {
 
+    const providerListData = useContext(ListContext)
+
+    return (
+        <div className="container speakers-list">
+                    <div className="row">
+                    {providerListData.list.map(function (speaker) {
+                        return (
+                        <Speaker 
+                            key={speaker.id} 
+                            speaker={speaker} 
+                            showSession={showSession}
+                            onFavoriteToggle={(doneCallback) => {
+                                updateRecord({
+                                    ...speaker,
+                                    favorite: !speaker.favorite,
+                                }, doneCallback);
+                            }} 
+                            />
+                        );
+                    })}
+                    </div>
+        </div>
+    ) 
+    /*
     const {
         data: speakersData, 
         requestStatus, 
         error,
         updateRecord, 
     } = useRequestDelay(2000, data)
+
+
 
     if (requestStatus === REQUEST_STATUS.FAILURE){
         return(
@@ -48,7 +76,7 @@ function SpeakersList({ showSession}) {
                     </div>
             </ReactPlaceHolder>
         </div>
-    )
+    ) */
 }
 
 export default SpeakersList;

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import ListContext from "../store/listContext";
 
 function Session ({title , room}) {
     return (
@@ -55,31 +56,36 @@ function Session ({title , room}) {
     )
   }
   
-  function SpeakerDemographics ({first, last, bio, company,twitterHandle,favorite,onFavoriteToggle}) {
+  function SpeakerDemographics ({speaker}) {
+    const listContext = useContext(ListContext);
+    const onFavoriteToggle = () => {
+      listContext.updateRecord({...speaker, favorite: !speaker.favorite})
+    }
+
     return (
       <div className="speaker-info">
       <div className="d-flex justify-content-between mb-3">
         <h3 className="text-truncate w-200">
-          {first} {last}
+          {speaker.first} {speaker.last}
         </h3>
       </div>
       <SpeakerFavorite
-        favorite={favorite}
+        favorite={speaker.favorite}
         onFavoriteToggle={onFavoriteToggle}
         /* Non serve sapere l'id da aggiornare quì, è incapsulato nella funzione*/
       />
       <div>
         <p className="card-description">
-          {bio} 
+          {speaker.bio} 
         </p>
         <div className="social d-flex flex-row mt-4">
             <div className="company">
                 <h5>Company</h5>
-                <h6>{company}</h6>
+                <h6>{speaker.company}</h6>
             </div>
             <div className="twitter">
                 <h5>Twitter</h5>
-                <h6>{twitterHandle}</h6>
+                <h6>{speaker.twitterHandle}</h6>
             </div>
         </div>
       </div>
@@ -93,7 +99,7 @@ function Session ({title , room}) {
       <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
       <div className="card card-height p-4 mt-4">
         <SpeakerImage id={id} first={first} last={last}/>
-        <SpeakerDemographics {...speaker} onFavoriteToggle={onFavoriteToggle} />
+        <SpeakerDemographics speaker={speaker}  />
       </div>
       {showSession === true ?  
         <Sessions sessions={sessions} /> : null}

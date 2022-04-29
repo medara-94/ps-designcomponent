@@ -1,6 +1,8 @@
 import SpeakersList from "./SpeakersList";
 import SpeakersToolbar from "./SpeakersToolbar";
 import { useState } from "react";
+import {ListProvider} from "../store/listContext";
+ 
 
 function Speakers({ theme, setTheme}) {
     const [showSession, setShowSession] = useState(true);
@@ -12,9 +14,12 @@ function Speakers({ theme, setTheme}) {
                 setTheme={setTheme} 
                 showSession={showSession}
                 setShowSession={setShowSession}/>
-            <SpeakersList 
-                showSession={showSession}
-                />
+                
+            <ListProvider> 
+                <SpeakersList 
+                    showSession={showSession}
+                    />    
+            </ListProvider>
         </>
     )
 }

@@ -28,11 +28,17 @@ function Session ({title , room}) {
   }
 
   function SpeakerFavorite({favorite, onFavoriteToggle}){
+
+    function doneCallback(){
+      console.log('In speakerfavorite:doneCallback');
+    }
+
     return(
       <div className="action padB1">
         <span
-          onClick={onFavoriteToggle}
-        >
+          onClick={function(){
+            return onFavoriteToggle(doneCallback);
+          }}>
           <i className={
             favorite === true ?
               "fa fa-star orange" : "fa fa-star-o orange"  /* fa stà per font awesome*/

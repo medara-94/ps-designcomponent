@@ -34,19 +34,27 @@ function useRequestDelay(delayTime = 1000, initialData=[]){
 
     //Sostituisce la vecchia funzione specifica generalizzandola
     function updateRecord(recordUpdated, doneCallback){
+        const originalRecords =[...data];
         const newRecords = data.map(function (rec){
             return rec.id === recordUpdated.id ? recordUpdated : rec;
         });
 
         async function delayFunction(){
             try {
+                //Optimistic UI, aggiorno subito, e poi faccio le varie chiamate che potrebbero dare errore
+                setData(newRecords);
                 await delay(delayTime);
+                // throw "Had Error."
                 if (doneCallback){
                     doneCallback();
                 }
-                setData(newRecords);
+                
             } catch (error){
                 console.log("error thrown inside delayFunction", error);
+                if (doneCallback) {
+                    doneCallback();
+                }
+                setData(originalRecords);
             }
         }
         delayFunction();

@@ -1,10 +1,11 @@
 import { ThemeContext} from '../Contexts/ThemeContext';
 import { useContext } from 'react';
+import { SpeakerFilterContext } from '../Contexts/SpeakerFilterContext';
 
-
-function SpeakersToolbar( {showSession, setShowSession}) {
+function SpeakersToolbar() {
 
   const {setTheme, theme} = useContext(ThemeContext);
+  const {showSessions, setShowSessions} = useContext(SpeakerFilterContext);
 
     return (
       <section className="toolbar dark-theme-header">
@@ -15,9 +16,9 @@ function SpeakersToolbar( {showSession, setShowSession}) {
                 <b>Show Sessions&nbsp;&nbsp;</b>
                 <label className="fav">
                   <input type="checkbox"  
-                         checked={showSession} 
+                         checked={showSessions} 
                          onChange={(event) => {
-                            setShowSession(event.target.checked);
+                            setShowSessions(event.target.checked);
                          }}/>
                   <span className="switch"></span>
                 </label>

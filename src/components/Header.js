@@ -1,4 +1,4 @@
-import { ThemeContext} from './Layout';
+import { ThemeContext } from '../Contexts/ThemeContext';
 import { useContext } from 'react';
 
 function Header() {

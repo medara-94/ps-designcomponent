@@ -1,17 +1,27 @@
-import { useState, createContext } from "react";
+import { useContext } from "react";
+import { ThemeContext, ThemeProvider } from "../Contexts/ThemeContext";
 
-export const ThemeContext = createContext();
+//La doppia funzione è necessaria perchè quando utilizzo lo useContext, il componente col contesto non è ancora creato e darebbe errore
+//Quindi prima lo creo, e poi lo utilizzo
 
-function Layout({startingTheme, children}) {
-    const [theme, setTheme] = useState(startingTheme);
+function Layout({startingTheme, children}){
+    return (
+        //{Children} renderizza tutti i componenti figli, quindi nel nostro caso Header e Speakers
+        <ThemeProvider startingTheme={startingTheme}>
+            <LayoutNoThemeProvider>{children}</LayoutNoThemeProvider>
+        </ThemeProvider>
+    )
+}
+
+function LayoutNoThemeProvider({children}) {
+    
+    const {theme} = useContext(ThemeContext);
 
     return (
         //{Children} renderizza tutti i componenti figli, quindi nel nostro caso Header e Speakers
-        <ThemeContext.Provider value={{setTheme, theme,}}>
             <div className={ theme === "light" ? "container-fluid light" : "container-fluid dark" }>
                 {children} 
             </div>
-        </ThemeContext.Provider>
     )
 }
 

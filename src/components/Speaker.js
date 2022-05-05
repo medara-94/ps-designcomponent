@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { SpeakerFilterContext } from "../Contexts/SpeakerFilterContext";
+import { SpeakerProvider, SpeakerContext } from "../Contexts/SpeakerContext";
 
 function Session ({title, room}) {
     return (
@@ -9,9 +10,10 @@ function Session ({title, room}) {
     );
   }
   
-  function Sessions ({sessions}){
+  function Sessions (){
     const {eventYear} = useContext(SpeakerFilterContext);
-    
+    const { speaker } = useContext(SpeakerContext);
+    const sessions = speaker.sessions;
     return (
       <div className="sessionBox card h-250">
         {sessions
@@ -29,7 +31,8 @@ function Session ({title, room}) {
 
   }
   
-  function SpeakerImage({id, first, last}){
+  function SpeakerImage(){
+    const { speaker: {id, first,last}} = useContext(SpeakerContext);
     return (
       <div className="speaker-img d-flex flex-row justify-content-center align-items-center h-300">
       <img
@@ -42,7 +45,8 @@ function Session ({title, room}) {
     )
   }
 
-  function SpeakerFavorite({favorite, onFavoriteToggle}){
+  function SpeakerFavorite(){
+    const { speaker, updateRecord } = useContext(SpeakerContext);
     const [inTransition, setInTransition] = useState(false);
     function doneCallback(){
       setInTransition(false);
@@ -53,10 +57,11 @@ function Session ({title, room}) {
         <span
           onClick={function(){
             setInTransition(true);
-            return onFavoriteToggle(doneCallback);
+            //Prima veniva passato l'id del record da aggiornare, ora non serve più perchè sono dentro ad un contesto
+            updateRecord({...speaker, favorite: !speaker.favorite}, doneCallback);
           }}>
           <i className={
-            favorite === true ?
+            speaker.favorite === true ?
               "fa fa-star orange" : "fa fa-star-o orange"  /* fa stà per font awesome*/
           }/>{" "}
           Favorite{" "}
@@ -68,7 +73,10 @@ function Session ({title, room}) {
     )
   }
   
-  function SpeakerDemographics ({first, last, bio, company,twitterHandle,favorite,onFavoriteToggle}) {
+  function SpeakerDemographics () {
+    const { speaker } = useContext(SpeakerContext);
+    const {first, last, bio, company,twitterHandle,favorite} = speaker;
+
     return (
       <div className="speaker-info">
       <div className="d-flex justify-content-between mb-3">
@@ -76,11 +84,7 @@ function Session ({title, room}) {
           {first} {last}
         </h3>
       </div>
-      <SpeakerFavorite
-        favorite={favorite}
-        onFavoriteToggle={onFavoriteToggle}
-        /* Non serve sapere l'id da aggiornare quì, è incapsulato nella funzione*/
-      />
+      <SpeakerFavorite />
       <div>
         <p className="card-description">
           {bio} 
@@ -100,18 +104,20 @@ function Session ({title, room}) {
     )
   }
   
-  function Speaker ({ speaker, onFavoriteToggle }) {
+  function Speaker ({ speaker, updateRecord }) {
     const {id, first, last, sessions } = speaker;
     const {showSessions} = useContext(SpeakerFilterContext);
     return (
-      <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
-      <div className="card card-height p-4 mt-4">
-        <SpeakerImage id={id} first={first} last={last}/>
-        <SpeakerDemographics {...speaker} onFavoriteToggle={onFavoriteToggle} />
+      <SpeakerProvider speaker={speaker} updateRecord={updateRecord}>
+        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
+        <div className="card card-height p-4 mt-4">
+          <SpeakerImage />
+          <SpeakerDemographics />
+        </div>
+        {showSessions === true ?  
+          <Sessions /> : null}
       </div>
-      {showSessions === true ?  
-        <Sessions sessions={sessions} /> : null}
-    </div>
+    </SpeakerProvider>
     )
   }
 

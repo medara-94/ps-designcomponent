@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { SpeakerFilterContext } from "../Contexts/SpeakerFilterContext";
 import { SpeakerProvider, SpeakerContext } from "../Contexts/SpeakerContext";
+import SpeakerDelete from "./SpeakerDelete";
 
 function Session ({title, room}) {
     return (
@@ -117,8 +118,8 @@ function Session ({title, room}) {
           <SpeakerImage />
           <SpeakerDemographics />
         </div>
-        {showSessions === true ?  
-          <Sessions /> : null}
+        {showSessions === true ? <Sessions /> : null}
+        <SpeakerDelete/>
       </div>
     </SpeakerProvider>
     )
